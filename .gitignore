@@ -1,0 +1,4 @@
+*.pyc
+*.json
+*Pipfile
+*.sqlite3
