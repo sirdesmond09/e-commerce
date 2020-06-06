@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import reverse
-from .models import OrderItem
+from .models import Order, OrderItem
 from .forms import OrderForm
 from cart.cart import Cart
 from .tasks import order_created
+
 
 def create_order(request):
     cart = Cart(request)
@@ -40,3 +42,13 @@ def create_order(request):
     }
 
     return render(request,'orders/order/create.html', context)
+
+
+@staff_member_required
+def admin_order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    
+    context = {
+        'order': order
+    }
+    return render(request,'admin/orders/order/detail.html',context)

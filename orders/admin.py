@@ -1,9 +1,19 @@
-from django.contrib import admin
-from .models import Order, OrderItem
 import csv
 import datetime
+from django.contrib import admin
+from .models import Order, OrderItem
 from django.http import HttpResponse
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
+def order_detail(obj):
+    """"
+        This is a function that takes an Order object as an argument and returns an HTML link for the admin_order_detail URL.
+    """
+    url = reverse('orders:admin_order_detail', args=[obj.id])
+    return mark_safe(f'<a href="{url}">View</a>')
+
+#converting to csv
 def export_to_csv(modeladmin, request, queryset):
     opts = modeladmin.model._meta
     content_disposition = f'attachment; filename={opts.verbose_name}.csv'
@@ -32,7 +42,7 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'first_name', 'last_name', 'email', 'address', 'postal_code', 'city', 'paid', 'braintree_id', 'created', 'updated']
+    list_display = ['first_name', 'last_name', 'email', 'city', 'paid', 'braintree_id', 'created', 'updated', order_detail]
     list_filter = ['paid', 'created', 'updated']
     inlines = [OrderItemInline]
     actions = [export_to_csv]
