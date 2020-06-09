@@ -1,0 +1,1 @@
+This is am ecommerce project fom my djangpo study group. Right now we have some basic functionalities like add products and categories, add products to cart, check out and payment using brain tree. Other features to be implemented soon
