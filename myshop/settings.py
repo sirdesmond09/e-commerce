@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -146,4 +147,11 @@ BRAINTREE_CONF = braintree.Configuration(
     BRAINTREE_MERCHANT_ID,
     BRAINTREE_PUBLIC_KEY,
     BRAINTREE_PRIVATE_KEY
+)
+
+#setting cloudinary for images storage
+cloudinary.config( 
+  cloud_name = "devolsdzk", 
+  api_key = "798374655217387", 
+  api_secret = "xx13XAH5uUBmkHPagIOSDy87uOo" 
 )
