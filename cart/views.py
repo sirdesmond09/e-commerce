@@ -3,6 +3,7 @@ from django.views.decorators.http import require_POST
 from shop.models import Product
 from .cart import Cart
 from .form import AddProductToCartForm
+from coupons.forms import CouponApplyForm
 
 # Create your views here.
 @require_POST
@@ -28,10 +29,16 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = Cart(request)
+    
     for item in cart:
         item['update_quantity_form'] = AddProductToCartForm(initial={'quantity': item['quantity'], 'override': True})
+
+    coupon_apply_form = CouponApplyForm()
+
     context = {
-        'cart': cart
+        'cart': cart,
+        'coupon_apply_form' : coupon_apply_form
+
     }
 
     return render(request, 'cart/detail.html', context)
