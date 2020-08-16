@@ -1,0 +1,139 @@
+{% extends "shop/index.html" %}
+{% load static %}
+
+{% block content %}
+    <!--================Home Banner Area =================-->
+    <section class="banner_area">
+      <div class="banner_inner d-flex align-items-center">
+        <div class="container">
+          <div class="banner_content d-md-flex justify-content-between align-items-center">
+            <div class="mb-3 mb-md-0">
+              <h2>
+                {% if category %}
+                  {{ category.name }}
+                {% else %}
+                  All Products
+                {% endif %}
+              </h2>
+              <p>Very us move be blessed multiply night</p>
+            </div>
+            <div class="page_link">
+              <a href="{% url 'shop:home' %}">Home</a>
+              <a href="{% url 'shop:product_list' %}">Shop</a>
+              <a>  {% if category %}
+                  {{ category.name }}
+                {% else %}
+                  Products
+                {% endif %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Home Banner Area =================-->
+
+    <!--================Category Product Area =================-->
+    <section class="cat_product_area section_gap">
+      <div class="container">
+        <div class="row flex-row-reverse">
+          <div class="col-lg-9">
+            <div class="product_top_bar">
+              <div class="left_dorp">
+                {% if category %}
+                  {{ category.name }}
+                {% else %}
+                    All Products
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="latest_product_inner">
+              <div class="row">
+                
+                {% for product in products  %}
+                <div class="col-lg-4 col-md-6">
+                  <div class="single-product">
+                    <div class="product-img">
+                      <img
+                        class="card-img"
+                        src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}"
+                        alt="{{product.name}}"
+                      />
+                      <div class="p_icon">
+                        <a href="{{ product.get_absolute_url }}">
+                          <i class="ti-eye"></i>
+                        </a>
+
+                        <a href="{{ product.get_absolute_url }}">
+                          <i class="ti-shopping-cart"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="product-btm">
+                      <a href="{{ product.get_absolute_url }}" class="d-block">
+                        <h4>{{product.name}}</h4>
+                      </a>
+                      <div class="mt-3">
+                        <span class="mr-4">#{{product.price}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+
+                
+                
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3">
+            <div class="left_sidebar_area">
+              <aside class="left_widgets p_filter_widgets">
+                <div class="l_w_title">
+                  <h3>Browse Categories</h3>
+                </div>
+                <div class="widgets_inner">
+                  <ul class="list">
+                    <li {% if not category %} class="active" {% endif %}>
+                        <a href="{% url 'shop:product_list' %}">All</a>
+                    </li>
+
+                    {% for c in categories %}
+                        <li {% if category.slug == c.slug %} class="active" {% endif %}>
+                            <a href= "{{ c.get_absolute_url }}" > {{ c.name }} </a>
+                        </li>
+                    {% endfor %}
+                    
+                  </ul>
+                </div>
+              </aside>
+
+              <aside class="left_widgets p_filter_widgets">
+                <div class="l_w_title">
+                  <h3>Product Brand</h3>
+                </div>
+                <div class="widgets_inner">
+                  <ul class="list">
+                    <li {% if not brand %} class="active" {% endif %}>
+                        <a href="{% url 'shop:product_list' %}">All</a>
+                    </li>
+
+                    {% for b in brands %}
+                        <li {% if brand.slug == b.slug %} class="active" {% endif %}>
+                            <a href= "{{ b.get_absolute_url }}" > {{ b.name }} </a>
+                        </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Category Product Area =================-->
+
+  {% endblock %}

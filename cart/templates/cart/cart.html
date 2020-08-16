@@ -1,0 +1,151 @@
+{% extends "shop/index.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!--================Home Banner Area =================-->
+    <section class="banner_area">
+      <div class="banner_inner d-flex align-items-center">
+        <div class="container">
+          <div
+            class="banner_content d-md-flex justify-content-between align-items-center"
+          >
+            <div class="mb-3 mb-md-0">
+              <h2>Cart</h2>
+              <p>Very us move be blessed multiply night</p>
+            </div>
+            <div class="page_link">
+              <a href="{% url "shop:home" %}">Home</a>
+              <a href="{% url "shop:product_list" %}">Product</a>
+              <a href="{% url "cart:cart_detail" %}">Cart</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Home Banner Area =================-->
+
+    <!--================Cart Area =================-->
+    <section class="cart_area">
+      <div class="container">
+        <div class="cart_inner">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Product</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Remove</th>
+
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in cart %}  
+                {% with product=item.product %}
+                  <tr>
+                    <td>
+                      <div class="media">
+                        <div class="d-flex">
+                          <img style="width:147px; height:100px" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}"
+                            alt=""
+                          />
+                        </div>
+                        <div class="media-body">
+                          <p>{{product.name}}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <h5>#{{product.price}}</h5>
+                    </td>
+                    <td>
+                      <div class="product_count">
+                        <form action="{% url "cart:cart_add" product.id %}" method="post">
+                          {{ item.update_quantity_form.quantity }}
+                          {{ item.update_quantity_form.override }}
+                          <input type="submit" value="Update">
+                          {% csrf_token %}
+                        </form>
+                      </div>
+                    </td>
+                    <td>
+                      <h5>#{{ item.total_price }}</h5>
+                    </td>
+                    <td>
+                        <form action="{% url "cart:cart_remove" product.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="Remove">
+                        </form>
+                      </td>
+                  </tr>
+                {% endwith %}
+              {% endfor %}
+                
+
+                <tr class="bottom_button">
+                  
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <div class="cupon_text">
+                      <form action="{% url "coupons:apply" %}" method="post">
+                        {{ coupon_apply_form }}
+                        <input type="submit" value="Apply">
+                        {% csrf_token %}
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  {% if cart.coupon %} 
+                    <tr class="subtotal">
+                        <td>Subtotal</td>
+                        <td colspan="4"></td>
+                        <td class="num">#{{ cart.get_total_price|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            "{{ cart.coupon.code }}" coupon
+                            ({{ cart.coupon.discount }}% off)
+                        </td>
+                        <td colspan="4"></td>
+                        <td class="num neg">
+                            - ${{ cart.get_discount|floatformat:2 }}
+                        </td>
+                    </tr>
+                  {% endif %}
+                  <tr>
+                    <td>
+                      <h5>Total</h5>
+                    </td>
+                    <td colspan="4"></td>
+                    <td>
+                      <h5>#{{ cart.get_total_price_after_discount|floatformat:2 }}</h5>
+                    </td>
+                  </tr>
+                </tr>
+                
+                <tr class="out_button_area">
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <div class="checkout_btn_inner">
+                      <a class="gray_btn" href="{% url "shop:product_list" %}">Continue Shopping</a>
+                      <a class="main_btn" href="{% url "orders:order_create" %}">Proceed to checkout</a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Cart Area =================-->
+
+  {% endblock %}

@@ -41,6 +41,6 @@ def cart_detail(request):
 
     }
 
-    return render(request, 'cart/detail.html', context)
+    return render(request, 'cart/cart.html', context)
 
 

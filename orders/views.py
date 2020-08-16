@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .models import Order, OrderItem
 from .forms import OrderForm
@@ -12,6 +13,7 @@ from .tasks import order_created
 # from django.template.loader import render_to_string
 # import weasyprint
 
+# @login_required
 def create_order(request):
     cart = Cart(request)
 
@@ -52,7 +54,7 @@ def create_order(request):
         'form': form
     }
 
-    return render(request,'orders/order/create.html', context)
+    return render(request,'orders/order/checkout.html', context)
 
 
 @staff_member_required
