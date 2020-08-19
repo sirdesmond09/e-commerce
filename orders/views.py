@@ -13,45 +13,60 @@ from .tasks import order_created
 # from django.template.loader import render_to_string
 # import weasyprint
 
-# @login_required
+@login_required
 def create_order(request):
     cart = Cart(request)
-
+    
     if request.method == 'POST':
-        form = OrderForm(request.POST)
+        user = request.user
+        # form = OrderForm(request.POST)
+        data = {}
+        data['first_name']= request.user.first_name
+        data['last_name'] = request.user.last_name
+        data['email']       = request.user.email
+        data['address'] = request.POST['address']
+        data['phone'] = request.POST['number']
+        data['postal_code'] = request.POST['postal_code']
+        data['city'] = request.POST['city']
 
-        if form.is_valid():
-            order = form.save(commit=False)
-            if cart.coupon:
-                order.coupon = cart.coupon
-                order.discount = cart.coupon.discount
-            order.save()
-            for item in cart:
-                #fill in the items in the cart into the db
-                OrderItem.objects.create(order = order, product=item['product'], price = item['price'], quantity=item['quantity'] )
-            #clear the cart
-            cart.clear()
-            
-            # launch asynchronous task to send mail
-            order_created.delay(order.id)
+        # print('\n', data)
+        order = Order.objects.create(**data)
+        
 
-            # set the order in the session
-            request.session['order_id'] = order.id
-            
-            # redirect for payment
-            return redirect(reverse('payment:process'))
+        if cart.coupon:
+            order.coupon = cart.coupon
+            order.discount = cart.coupon.discount
+        order.save()
+        for item in cart:
+            #fill in the items in the cart into the db
+            OrderItem.objects.create(order = order, product=item['product'], price = item['price'], quantity=item['quantity'] )
+        #clear the cart
+        cart.clear()
+        
+        # launch asynchronous task to send mail
+        order_created.delay(order.id)
 
-            context = {
-                'order' : order
-            }
-            return render(request, 'orders/order/created.html', context)
+        # set the order in the session
+        request.session['order_id'] = order.id
+        
+        # redirect for payment
+        return redirect(reverse('payment:process'))
+
+        context = {
+            'order' : order,
+            'user'  : user
+        }
+        return render(request, 'orders/order/created.html', context)
 
             
     else:
+        user = request.user
         form = OrderForm()
+        
     context = {
         'cart': cart, 
-        'form': form
+        'form': form,
+        'user'  : user
     }
 
     return render(request,'orders/order/checkout.html', context)

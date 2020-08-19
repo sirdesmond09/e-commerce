@@ -29,7 +29,8 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = Cart(request)
-    
+    quantity_in_cart = len(cart)
+
     for item in cart:
         item['update_quantity_form'] = AddProductToCartForm(initial={'quantity': item['quantity'], 'override': True})
 
@@ -37,8 +38,9 @@ def cart_detail(request):
 
     context = {
         'cart': cart,
-        'coupon_apply_form' : coupon_apply_form
-
+        'coupon_apply_form' : coupon_apply_form,
+        'section' : 'shop',
+        'quantity_in_cart':quantity_in_cart
     }
 
     return render(request, 'cart/cart.html', context)

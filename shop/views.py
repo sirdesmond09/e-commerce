@@ -8,7 +8,8 @@ def home(request):
     featured = _all[15:20] 
     context = {
         'new' : new,
-        'featured':featured
+        'featured':featured,
+        'section':'home'
     }
     return render(request, 'shop/index.html', context=context)
 
@@ -34,6 +35,7 @@ def product_list(request, category_slug = None, brand_slug = None):
         'products'   : products,
         'brands'     : brands,
         'brand'      : brand,
+        'section'    : 'shop'
     }
 
     return render(request, 'shop/product/category.html', context)
@@ -46,7 +48,8 @@ def product_detail(request, id, slug):
 
     context = {    
         'product': product,
-        'cart_product_form' : cart_product_form
+        'cart_product_form' : cart_product_form,
+        'section'     : 'shop'
 
     }
     
